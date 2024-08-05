@@ -1,16 +1,39 @@
 ---
+import { CardsSection, CommentSection } from '@/components';
+import Layout from '../layouts/index.layout.astro'
 
+import { cx, css } from 'styled-system/css';
+import { container, grid } from 'styled-system/patterns';
+
+const html = await Astro.slots.render('default')
+console.log(html)
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+	
+	<main class={ 
+		css({ 
+			width: { 
+				xsm: '100%', 
+				lg: '100%' 
+			},
+			height: {
+				xsm: '100%', 
+				lg: '100%'
+			},
+			backgroundColor: 'hsl(223, 19%, 93%)',
+		}) 
+	}>
+
+		<div id="container" class={ container() }>
+			<div id="cards-box" class={ cx( css({ width: { xsm: '375px', lg: '740px' }, paddingTop: '15px' }), grid({ columns: 12, rowGap: '4' }) ) }>
+
+				<CardsSection client:load/>
+				<CommentSection client:load/>
+
+			</div>
+		</div>
+
+	</main>
+
+</Layout>
