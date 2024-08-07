@@ -1,0 +1,7 @@
+1.- Hacer la carta base
+2.- Llenar la informacion de la carta
+3.- Crear el backend (ya sea en php o en nest con mongodb o firebase o un psgsql)
+4.- Generar informacion de la DB basada en el archivo data.json
+5.- Hacer paginacion (ya sea desde tanstack o la DB)
+6.- Hacer fetch de la informacion en una carta
+7.- Llenar las cartas con la data.json
