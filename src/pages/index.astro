@@ -1,5 +1,5 @@
 ---
-import { CardsSection, CommentSection } from '@/components';
+import { AppComments, CommentSection } from '@/components';
 import Layout from '../layouts/index.layout.astro'
 
 import { cx, css } from 'styled-system/css';
@@ -28,8 +28,8 @@ console.log(html)
 		<div id="container" class={ container() }>
 			<div id="cards-box" class={ cx( css({ width: { xsm: '375px', lg: '740px' }, paddingTop: '15px' }), grid({ columns: 12, rowGap: '4' }) ) }>
 
-				<CardsSection client:load/>
-				<CommentSection client:load/>
+				<AppComments client:load/>
+				<CommentSection client:load/>|
 
 			</div>
 		</div>
