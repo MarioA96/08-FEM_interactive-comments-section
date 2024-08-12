@@ -2,6 +2,7 @@
 import '../index.css'
 
 import { css } from 'styled-system/css'; 
+import { container } from 'styled-system/patterns';
 ---
 
 <html lang="en">
@@ -12,7 +13,7 @@ import { css } from 'styled-system/css';
 		<meta name="generator" content={Astro.generator} />
 		<title>Astro</title>
 	</head>
-	<body class={ css({ width: '100vw', height: '100vh', backgroundColor: 'hsl(223, 19%, 93%)', }) }>
-		<slot />
+	<body>
+		<slot class={ css({ backgroundColor: 'gray.500' }) }/>
 	</body>
 </html>

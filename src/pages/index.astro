@@ -1,5 +1,5 @@
 ---
-import { AppComments, CommentSection } from '@/components';
+import { AppComments } from '@/components';
 import Layout from '../layouts/index.layout.astro'
 
 import { cx, css } from 'styled-system/css';
@@ -26,10 +26,9 @@ console.log(html)
 	}>
 
 		<div id="container" class={ container() }>
-			<div id="cards-box" class={ cx( css({ width: { xsm: '375px', lg: '740px' }, paddingTop: '15px' }), grid({ columns: 12, rowGap: '4' }) ) }>
+			<div id="cards-box" class={ cx( css({ width: { xsm: '368px', lg: '740px' }, paddingTop: '15px' }), grid({ columns: 12, rowGap: '4' }) ) }>
 
 				<AppComments client:load/>
-				<CommentSection client:load/>|
 
 			</div>
 		</div>
