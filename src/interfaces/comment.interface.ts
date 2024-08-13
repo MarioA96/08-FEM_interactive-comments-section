@@ -4,7 +4,7 @@ export interface Comment {
 }
 
 export interface CommentElement {
-    id:          number;
+    id:          string;
     content:     string;
     createdAt:   string;
     score:       number;
