@@ -6,6 +6,7 @@ import { grid, gridItem } from "styled-system/patterns";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod";
+import {v4 as uuidv4} from 'uuid';
 
 import {
     Card,
@@ -21,9 +22,11 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
-import { useEffect, useState } from "react";
 
 import type{ User } from "@/interfaces/comment.interface";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCommentApi } from "@/helpers/useCommentApi";
+import { useEffect, useState } from "react";
 
 
 const formSchema = z.object({
@@ -37,6 +40,38 @@ const formSchema = z.object({
 
 export function AutorCommentSection() {
 
+    //QueryClient for cache management
+    const queryClient = useQueryClient();
+
+    const [currentUser, setCurrentUser] = useState<User>({
+        image: {
+            png: '',
+            webp: ''
+        },
+        username: ''
+    });
+
+    //Local query of the cache
+    const queryCurrentUser = useQuery<User, unknown>(
+        ['currentUser'],
+    );
+
+    useEffect(() => {
+        setCurrentUser(queryCurrentUser.data!);
+    }, []);
+
+
+    //Mutation of the cache by adding a new comment
+    const commentApi = useCommentApi();
+    const mutation = useMutation({
+        mutationFn: commentApi.postComment,
+        onSuccess: () => {
+          // Invalidate and refetch
+          queryClient.invalidateQueries({ queryKey: ['comments'] })
+        },
+    })
+    
+
     // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -49,22 +84,18 @@ export function AutorCommentSection() {
     function onSubmit(values: z.infer<typeof formSchema>) {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
-        console.log(values);
+        //console.log(values);
+        mutation.mutate({
+            id: uuidv4(),
+            content: values.comment,
+            createdAt: new Date().toISOString(),
+            score: 0,
+            user: currentUser!,
+        })
     }
-
-    const [items, setItems] = useState({} as User);
-
-    useEffect(() => {
-        const items: User = JSON.parse(localStorage.getItem('currentUser')!);
-        if (items) {
-            setItems(items);
-        }
-    }, []);
-
-    //TODO manejarlo mediante tanstack con el manejo del cache, checando el devtoools
   
     return (
-        <div className={ cx( gridItem({ colSpan: 11 }), css({ height: '208px' }) ) }>
+        <div className={ cx( gridItem({ colSpan: 11 }), css({ height: '208px', marginTop: 'auto' }) ) }>
             <Card className="h-52">
                 <CardContent className={css({ marginTop: '15px' })}>
                     <Form {...form}>
@@ -90,7 +121,11 @@ export function AutorCommentSection() {
 
                             <div className={grid({ columns: 12 })}>
                                 <div className={gridItem({ colSpan: 8 })}>
-                                    <img src='' width="38px" />
+                                    {
+                                        currentUser && (
+                                            <img src={ currentUser.image.png } width="38px"/>
+                                        )
+                                    }
                                 </div>
                                 <Button type="submit" className={cx( gridItem({ colSpan: 4 }), 
                                     css({ 
