@@ -1,6 +1,6 @@
 {
   "currentUser": {
-    "image": { 
+    "image": {
       "png": "/assets/images/avatars/image-juliusomo.png",
       "webp": "/assets/images/avatars/image-juliusomo.webp"
     },
@@ -8,12 +8,12 @@
   },
   "comments": [
     {
-      "id": 1,
+      "id": "7c79d9fb-6418-4978-b1ed-39522b180528",
       "content": "Impressive! Though it seems the drag feature could be improved. But overall it looks incredible. You've nailed the design and the responsiveness at various breakpoints works really well.",
       "createdAt": "1 month ago",
       "score": 12,
       "user": {
-        "image": { 
+        "image": {
           "png": "/assets/images/avatars/image-amyrobson.png",
           "webp": "/assets/images/avatars/image-amyrobson.webp"
         },
@@ -22,7 +22,7 @@
       "replies": []
     },
     {
-      "id": 2,
+      "id": "b3b1e6b1-1b1b-4b6b-8b1b-1b1b1b1b1b1b",
       "content": "Woah, your project looks awesome! How long have you been coding for? I'm still new, but think I want to dive into React as well soon. Perhaps you can give me an insight on where I can learn React? Thanks!",
       "createdAt": "2 weeks ago",
       "score": 5,
@@ -35,7 +35,7 @@
       },
       "replies": [
         {
-          "id": 3,
+          "id": "f1f1f1f1-f1f1-f1f1-f1f1-f1f1f1f1f1f1",
           "content": "If you're still new, I'd recommend focusing on the fundamentals of HTML, CSS, and JS before considering React. It's very tempting to jump ahead but lay a solid foundation first.",
           "createdAt": "1 week ago",
           "score": 4,
@@ -49,7 +49,7 @@
           }
         },
         {
-          "id": 4,
+          "id": "00968046-c0bf-48a5-aac7-bb3d231c242a",
           "content": "I couldn't agree more with this. Everything moves so fast and it always seems like everyone knows the newest library/framework. But the fundamentals are what stay constant.",
           "createdAt": "2 days ago",
           "score": 2,
@@ -63,6 +63,19 @@
           }
         }
       ]
+    },
+    {
+      "id": "c880d4bd-7331-46bc-a134-d85fb5ed4541",
+      "content": "Agregamos de nuevo un comentario.",
+      "createdAt": "2024-08-11T02:56:19.772Z",
+      "score": 0,
+      "user": {
+        "image": {
+          "png": "/assets/images/avatars/image-juliusomo.png",
+          "webp": "/assets/images/avatars/image-juliusomo.webp"
+        },
+        "username": "juliusomo"
+      }
     }
   ]
 }
