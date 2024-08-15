@@ -9,7 +9,7 @@ import {
 import { Button } from "./ui/button"
 import { css } from "styled-system/css"
 
-export const CommentDeleteDialog = () => {
+export const CommentDeleteDialog = ({ onDelete }: { onDelete: Function }) => {
     return (
         <div id="dialog_container">
             <DialogContent className="min-w-[150px] max-w-[350px] rounded-lg">
@@ -20,10 +20,10 @@ export const CommentDeleteDialog = () => {
                         </span>
                     </DialogTitle>
                     <DialogDescription>
-                        <p className={css({ display: 'flex', textAlign: 'justify', color: 'gray.400', fontWeight: '500' })}>
+                        <span className={css({ display: 'flex', textAlign: 'justify', color: 'gray.400', fontWeight: '500' })}>
                             Are you sure you want to delete this comment? This will remove the comment
                             and can't be undone.
-                        </p>
+                        </span>
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
@@ -33,7 +33,9 @@ export const CommentDeleteDialog = () => {
                                 NO, CANCEL
                             </Button>
                         </DialogClose>
-                        <Button className={ css({ backgroundColor: 'red.500' }) }>YES, DELETE</Button>
+                        <Button onClick={() => onDelete()} className={ css({ backgroundColor: 'red.500' }) }>
+                            YES, DELETE
+                        </Button>
                     </div>
                 </DialogFooter>
             </DialogContent>

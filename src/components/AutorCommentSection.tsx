@@ -58,7 +58,7 @@ export function AutorCommentSection() {
 
     useEffect(() => {
         setCurrentUser(queryCurrentUser.data!);
-    }, []);
+    }, [currentUser]);
 
 
     //Mutation of the cache by adding a new comment
@@ -84,7 +84,7 @@ export function AutorCommentSection() {
     function onSubmit(values: z.infer<typeof formSchema>) {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
-        //console.log(values);
+        console.log(values);
         mutation.mutate({
             id: uuidv4(),
             content: values.comment,

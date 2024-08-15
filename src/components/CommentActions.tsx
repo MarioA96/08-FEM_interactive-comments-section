@@ -1,7 +1,9 @@
 import { Reply, Trash2, Edit3 } from 'lucide-react';
 import { Dialog, DialogTrigger } from './ui/dialog';
-import { css, cva, cx } from 'styled-system/css';
+import { css, cva } from 'styled-system/css';
 import { CommentDeleteDialog } from './CommentDeleteDialog';
+import { useCommentApi } from '@/helpers/useCommentApi';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 
 const ElementBox = cva({
@@ -24,34 +26,63 @@ const ElementBox = cva({
     }
 });
 
-export const CommentActions = ({ isSelfComment }: { isSelfComment: boolean}) => {
+export const CommentActions = ({ setIsEditigComment, isSelfComment, idCommentParent, idCommentChild }: { setIsEditigComment: Function, isSelfComment: boolean, idCommentParent: string, idCommentChild?: string}) => {
+    
+    const queryClient = useQueryClient();
+
+    const commnetApi = useCommentApi();
+
+    const mutation = useMutation({
+        mutationFn: () => (
+            idCommentChild 
+                ? commnetApi.deleteComment(idCommentParent, idCommentChild) 
+                : commnetApi.deleteComment(idCommentParent)
+        ),
+        onSuccess: () => {
+          // Invalidate and refetch
+          queryClient.invalidateQueries({ queryKey: ['comments'] })
+        },
+    })
+
+    const onDelete = () => {
+        //funciona
+        console.log(idCommentParent, idCommentChild); //Deben de salir diferente id's puesto a que son del mismo auto pero diferentes comentarios
+        mutation.mutate();
+    };
+    
+    const onEdit = () => {
+        setIsEditigComment(true);
+    }
+
     return (
         <>
             {
-                !isSelfComment ? (
-                    <button className={ ElementBox({ visual: 'reply' }) }>
-                        <Reply size={15} strokeWidth={3} />
-                        <span>Reply</span>
-                    </button>
-                ) : (
-                    <div className={ ElementBox({ }) }>
-                        <div className={ ElementBox({ visual: 'trash' }) }>
-                            <Dialog>
-                                <DialogTrigger asChild>
-                                    <button className={ css({ cursor: 'pointer' }) }>
-                                        <Trash2 size={15} strokeWidth={3} />
-                                        <span>Delete</span>
-                                    </button>
-                                </DialogTrigger>
-                                <CommentDeleteDialog />
-                            </Dialog>
+                !isSelfComment 
+                    ? (
+                        <button className={ ElementBox({ visual: 'reply' }) }>
+                            <Reply size={15} strokeWidth={3} />
+                            <span>Reply</span>
+                        </button>
+                      ) 
+                    : (
+                        <div className={ ElementBox({ }) }>
+                            <div className={ ElementBox({ visual: 'trash' }) }>
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <button className={ css({ cursor: 'pointer' }) }>
+                                            <Trash2 size={15} strokeWidth={3} />
+                                            <span>Delete</span>
+                                        </button>
+                                    </DialogTrigger>
+                                    <CommentDeleteDialog onDelete={ onDelete }/>
+                                </Dialog>
+                            </div>
+                            <div onClick={onEdit} className={ ElementBox({ visual: 'edit' }) }>
+                                <Edit3 size={15} strokeWidth={3} />
+                                <span>Edit</span>
+                            </div>
                         </div>
-                        <div className={ ElementBox({ visual: 'edit' }) }>
-                            <Edit3 size={15} strokeWidth={3} />
-                            <span>Edit</span>
-                        </div>
-                    </div>
-                )
+                      )
             }
         </>
     )
