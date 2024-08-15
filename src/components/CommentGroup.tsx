@@ -11,6 +11,7 @@ export const CommentGroup = ({comment, currentUser}:{ comment: CommentElement, c
     return (
         <>
             <CommentItem 
+                idCommentParent={comment.id}
                 user={comment.user} 
                 createdAt={comment.createdAt} 
                 content={comment.content} 
@@ -23,6 +24,8 @@ export const CommentGroup = ({comment, currentUser}:{ comment: CommentElement, c
                     else {isSelfComment = false;}
                     return (
                         <CommentItem key={index} 
+                            idCommentParent={comment.id}
+                            idCommentChild={reply.id}
                             user={reply.user} 
                             createdAt={reply.createdAt} 
                             content={reply.content} 
