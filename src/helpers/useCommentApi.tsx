@@ -1,4 +1,4 @@
-import type { Comment, CommentElement, User } from "@/interfaces/comment.interface";
+import type { CommentElement, User } from "@/interfaces/comment.interface";
 import { CommentApi } from "./connections/commentApi";
 
 export const useCommentApi = () => {
@@ -48,10 +48,27 @@ export const useCommentApi = () => {
 
     }
 
+    const deleteComment = async(idCommentParent: string, idCommentChild?: string) => {
+            
+        try {
+            
+            const deletedResp = idCommentChild ? await CommentApi.delete(`/comments/${idCommentParent}`, idCommentChild)
+                                               : await CommentApi.delete(`/comments/${idCommentParent}`);
+            
+            return deletedResp;
+        } catch (error) {
+            console.error('Error deleting comment', error);
+        }
+    
+    }
+
+
     return {
         getComments,
         getCurrentUser,
 
-        postComment
+        postComment,
+
+        deleteComment
     }
 }
