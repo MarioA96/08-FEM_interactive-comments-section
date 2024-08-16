@@ -1,6 +1,18 @@
+import { useState } from "react";
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCommentApi } from "@/helpers/useCommentApi";
+
 import { css, cx } from "styled-system/css";
 import { grid, gridItem } from "styled-system/patterns";
 
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form"
 import {
     Card,
     CardContent,
@@ -9,16 +21,68 @@ import {
   } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea"
+import { Button } from "./ui/button";
 
 import { CommentScore } from "./CommentScore";
 import { CommentActions } from "./CommentActions";
 import type { User } from "@/interfaces/comment.interface";
-import { useState } from "react";
-import { Button } from "./ui/button";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+
+
+const formSchema = z.object({
+    comment: z.string().min(2, {
+      message: "Comment must be at least 2 characters.",
+    }).max(270,{
+        message: "Comment must be at most 270 characters."
+    }),
+})
 
 export const CommentItem = ({ idCommentParent, idCommentChild, user, createdAt, content, score, replyingTo, isSelfComment, isReply }: { idCommentParent: string, idCommentChild?: string , user: User, createdAt: string, content: string, score: number, replyingTo?: string, isSelfComment: boolean, isReply?: boolean }) => {
   
     const [isEditigComment, setIsEditigComment] = useState<boolean>(false);
+    const queryClient = useQueryClient();
+    const commentApi = useCommentApi();
+
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            comment: content,
+        },
+    });
+
+    const mutation = useMutation({
+        mutationFn: commentApi.updateComment,
+        onSuccess: () => {
+          // Invalidate and refetch
+          queryClient.invalidateQueries({ queryKey: ['comments'] })
+        },
+    })
+
+    type Parameter = {
+        idCommentParent: string,
+        content: string
+        idCommentChild?: string,
+    };
+    function onSubmit(values: z.infer<typeof formSchema>) {
+        console.log({idCommentParent, idCommentChild, values});
+        
+        const content = values.comment;
+        const parameters: Parameter = idCommentChild 
+                            ? { idCommentParent, content, idCommentChild } 
+                            : { idCommentParent, content };
+        
+        mutation.mutate({...parameters});
+        setIsEditigComment(false);
+    }
+    function handleCancel(event: React.MouseEvent<HTMLButtonElement>) {
+        event.preventDefault(); 
+        setIsEditigComment(false);
+    }
+
 
     return (
         <>
@@ -51,42 +115,56 @@ export const CommentItem = ({ idCommentParent, idCommentChild, user, createdAt, 
                     </CardHeader>
 
                     <CardContent>
-                        <p id="replyComment_content" className="font-sans font-medium text-gray-400 text-[13px]">
-                            { replyingTo && ( <span className="text-indigo-600 font-bold">@{ replyingTo }</span> ) } 
+                        <div id="replyComment_content" className="font-sans font-medium text-gray-400 text-[13px]">
+                            { replyingTo && ( <span className="text-indigo-600 font-bold">@{ replyingTo }&nbsp;</span> ) } 
                             { 
                                 isEditigComment 
                                     ? (
-                                        //TODO Envolver esto en un Form y procesar la actualización del comentario con zod y el hook useMutation
-                                        <Textarea 
-                                            className="resize-none"
-                                            value={content}
-                                        />
+                                        <Form {...form}>
+                                            <form onSubmit={form.handleSubmit(onSubmit)}>
+                                                
+                                                <FormField
+                                                    control={form.control}
+                                                    name="comment"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormControl>
+                                                                <Textarea 
+                                                                    className="resize-none"
+                                                                    {...field}
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+
+                                                 <div id="replyComment_btn_update" className={ cx( gridItem({ colSpan: 8 }), css({ spaceX: 4, marginTop: 3, marginLeft: 5 }) ) }>
+                                                    <Button type="submit" className={ css({ backgroundColor: 'indigo.700' }) }>Update</Button>
+                                                    <Button onClick={handleCancel}>Cancel</Button>
+                                                </div>
+
+                                            </form>
+                                        </Form>
                                       ) 
                                     : content 
                             }
-                        </p>
+                        </div>
                     </CardContent>
 
                     <CardFooter>
                         <div className={ grid({ columns: 12, gap: '6' }) }>
                             {
-                                isEditigComment 
-                                    ? (
-                                        <div id="replyComment_btn_update" className={ gridItem({ colSpan: 8 }) }>
-                                            <Button>Update</Button>
-                                            <Button>Cancel</Button>
+                                !isEditigComment && (
+                                    <>
+                                        <div id="replyComment_score" className={ cx( gridItem({ colSpan: 4 }), css({ borderRadius: '10px' }) ) }>
+                                            <CommentScore score={ score }/>
                                         </div>
-                                    )
-                                    : (
-                                        <>
-                                            <div id="replyComment_score" className={ cx( gridItem({ colSpan: 4 }), css({ borderRadius: '10px' }) ) }>
-                                                <CommentScore score={ score }/>
-                                            </div>
-                                            <div id="replyComment_btn_actions" className={ gridItem({ colSpan: 8 }) }>
-                                                <CommentActions setIsEditigComment={setIsEditigComment} isSelfComment={isSelfComment} idCommentParent={idCommentParent} idCommentChild={idCommentChild}/>
-                                            </div>
-                                        </>
-                                    )
+                                        <div id="replyComment_btn_actions" className={ gridItem({ colSpan: 8 }) }>
+                                            <CommentActions setIsEditigComment={setIsEditigComment} isSelfComment={isSelfComment} idCommentParent={idCommentParent} idCommentChild={idCommentChild}/>
+                                        </div>
+                                    </>
+                                )
                             }
                         </div>
                     </CardFooter>
