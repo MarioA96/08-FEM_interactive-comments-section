@@ -1,6 +1,13 @@
 import type { CommentElement, User } from "@/interfaces/comment.interface";
 import { CommentApi } from "./connections/commentApi";
 
+
+type Parameter = {
+    idCommentParent: string,
+    content: string
+    idCommentChild?: string,
+};
+
 export const useCommentApi = () => {
 
     const getComments = async() => {
@@ -62,6 +69,29 @@ export const useCommentApi = () => {
     
     }
 
+    const updateComment = async(parameters: Parameter) => {
+           
+        try {
+            const updatedComment:CommentElement = parameters.idCommentChild 
+                                                        ? await CommentApi.put(`/comments/${parameters.idCommentParent}`, parameters.content, parameters.idCommentChild)
+                                                                .then((resp) => resp.json())
+                                                                .then((comment) => {
+                                                                    return comment;
+                                                                })
+                                                        : await CommentApi.put(`/comments/${parameters.idCommentParent}`, parameters.content)
+                                                                .then((resp) => resp.json())
+                                                                .then((comment) => {
+                                                                    return comment;
+                                                                });
+                                                        
+            return updatedComment;
+        } catch (error) {
+            console.error('Error updating comment', error);
+        }
+
+    }
+
+
 
     return {
         getComments,
@@ -69,6 +99,8 @@ export const useCommentApi = () => {
 
         postComment,
 
-        deleteComment
+        deleteComment,
+
+        updateComment,
     }
 }
