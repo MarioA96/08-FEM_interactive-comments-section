@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
 
-import type{ User } from "@/interfaces/comment.interface";
+import type{ CommentElement, User } from "@/interfaces/comment.interface";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCommentApi } from "@/helpers/useCommentApi";
 import { useEffect, useState } from "react";
@@ -38,7 +38,7 @@ const formSchema = z.object({
 })
 
 
-export function AutorCommentSection() {
+export function AutorCommentSection({idCommentParent, idCommentChild, isReplyingParent, setIsReplyingParent, isReplyingChild, setIsReplyingChild, replyingToParentUser, replyingToChildUser}:{idCommentParent: string, idCommentChild?: string, isReplyingParent?: boolean, setIsReplyingParent: Function, isReplyingChild?: boolean, setIsReplyingChild: Function, replyingToParentUser?: string, replyingToChildUser?: string}) {
 
     //QueryClient for cache management
     const queryClient = useQueryClient();
@@ -71,27 +71,53 @@ export function AutorCommentSection() {
         },
     })
     
-
+    //TODO agregar la petición de la api para agregar un comentario reply quitando el @ del comentario
+    //TODO para la peticion debemos extraer ese @ del comentario y enviarlo como un parametro extra
     // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            comment: "",
+            comment: isReplyingParent || isReplyingChild ? `@${isReplyingParent ? replyingToParentUser : replyingToChildUser} ` : '',
         },
     });
 
+    type CommentParameter = {
+        comment: CommentElement,
+        idCommentParent?: string,
+        idCommentChild?: string,
+    }
     // 2. Define a submit handler.
     function onSubmit(values: z.infer<typeof formSchema>) {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
         console.log(values);
-        mutation.mutate({
+        
+        const comment: CommentElement = {
             id: uuidv4(),
             content: values.comment,
             createdAt: new Date().toISOString(),
             score: 0,
-            user: currentUser!,
-        })
+            user: queryCurrentUser.data!,
+            replies: []
+        }
+        let parameters: CommentParameter = { comment };
+        if(idCommentChild){
+            parameters = { comment, idCommentParent, idCommentChild };
+        }
+        else if(idCommentParent){
+            parameters = { comment, idCommentParent };
+        }
+        mutation.mutate({...parameters});
+    }
+
+    function handleCancel(event: React.MouseEvent<HTMLButtonElement>) {
+        event.preventDefault(); 
+        if(isReplyingParent){
+            setIsReplyingParent(false);
+        }
+        else if(isReplyingChild){
+            setIsReplyingChild(false);
+        }
     }
   
     return (
@@ -107,11 +133,22 @@ export function AutorCommentSection() {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormControl>
-                                            <Textarea 
-                                                placeholder="Add a comment..."
-                                                className="resize-none"
-                                                {...field}
-                                            />
+                                            {
+                                                (isReplyingParent || isReplyingChild)
+                                                    ? (
+                                                        <Textarea 
+                                                            className="resize-none"
+                                                            {...field}
+                                                        />
+                                                    )
+                                                    : (
+                                                        <Textarea 
+                                                            placeholder="Add a comment..."
+                                                            className="resize-none"
+                                                            {...field}
+                                                        />
+                                                    )
+                                            }
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>
@@ -120,20 +157,39 @@ export function AutorCommentSection() {
 
 
                             <div className={grid({ columns: 12 })}>
-                                <div className={gridItem({ colSpan: 8 })}>
+                                <div className={gridItem({ colSpan: 4 })}>
                                     {
                                         currentUser && (
                                             <img src={ currentUser.image.png } width="38px"/>
                                         )
                                     }
                                 </div>
+                                {
+                                    (isReplyingParent || isReplyingChild)  
+                                        && (
+                                            <Button 
+                                                onClick={handleCancel}
+                                                className={cx( gridItem({ colSpan: 4 }), 
+                                                    css({ 
+                                                        backgroundColor: 'red.500', 
+                                                        _hover: { backgroundColor: 'hsl(211, 10%, 45%)' }
+                                                    }) )}
+                                            >
+                                                Cancel
+                                            </Button>
+                                        )
+                                }
                                 <Button type="submit" className={cx( gridItem({ colSpan: 4 }), 
                                     css({ 
                                         backgroundColor: 'hsl(238, 40%, 52%)', 
                                         _hover: { backgroundColor: 'hsl(211, 10%, 45%)' }
                                     }) )}
                                 >
-                                    Send
+                                    {
+                                        isReplyingParent || isReplyingChild
+                                            ? 'Reply'
+                                            : 'Send'
+                                    }
                                 </Button>
                             </div>
                             
