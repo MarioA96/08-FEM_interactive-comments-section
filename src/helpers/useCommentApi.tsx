@@ -2,6 +2,11 @@ import type { CommentElement, User } from "@/interfaces/comment.interface";
 import { CommentApi } from "./connections/commentApi";
 
 
+type CommentParameter = {
+    comment: CommentElement,
+    idCommentParent?: string,
+    idCommentChild?: string,
+}
 type Parameter = {
     idCommentParent: string,
     content: string
@@ -40,10 +45,10 @@ export const useCommentApi = () => {
 
     }
 
-    const postComment = async(comment: CommentElement) => {
+    const postComment = async(commentParameter: CommentParameter) => {
 
         try {
-            const newComment:CommentElement = await CommentApi.post('/comments', comment)
+            const newComment:CommentElement = await CommentApi.post('/comments', commentParameter.comment)
                                             .then((resp) => resp.json())
                                             .then((comment) => {
                                                 return comment;
