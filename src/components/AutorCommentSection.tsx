@@ -72,7 +72,6 @@ export function AutorCommentSection({idCommentParent, idCommentChild, isReplying
     })
     
     //TODO agregar la petición de la api para agregar un comentario reply quitando el @ del comentario
-    //TODO para la peticion debemos extraer ese @ del comentario y enviarlo como un parametro extra
     // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -97,6 +96,7 @@ export function AutorCommentSection({idCommentParent, idCommentChild, isReplying
             content: values.comment,
             createdAt: new Date().toISOString(),
             score: 0,
+            replyingTo: isReplyingParent ? replyingToParentUser : isReplyingChild ? replyingToChildUser : '',
             user: queryCurrentUser.data!,
             replies: []
         }
@@ -107,6 +107,7 @@ export function AutorCommentSection({idCommentParent, idCommentChild, isReplying
         else if(idCommentParent){
             parameters = { comment, idCommentParent };
         }
+
         mutation.mutate({...parameters});
     }
 
