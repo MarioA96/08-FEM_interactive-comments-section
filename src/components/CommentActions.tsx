@@ -26,10 +26,9 @@ const ElementBox = cva({
     }
 });
 
-export const CommentActions = ({ setIsEditigComment, isSelfComment, idCommentParent, idCommentChild }: { setIsEditigComment: Function, isSelfComment: boolean, idCommentParent: string, idCommentChild?: string}) => {
+export const CommentActions = ({ setIsReplyingParent, setIsReplyingChild, setIsEditigComment, isSelfComment, idCommentParent, idCommentChild }: { setIsReplyingParent: Function, setIsReplyingChild: Function, setIsEditigComment: Function, isSelfComment: boolean, idCommentParent: string, idCommentChild?: string}) => {
     
     const queryClient = useQueryClient();
-
     const commnetApi = useCommentApi();
 
     const mutation = useMutation({
@@ -45,13 +44,22 @@ export const CommentActions = ({ setIsEditigComment, isSelfComment, idCommentPar
     })
 
     const onDelete = () => {
-        //funciona
-        console.log(idCommentParent, idCommentChild); //Deben de salir diferente id's puesto a que son del mismo auto pero diferentes comentarios
+        console.log(idCommentParent, idCommentChild);
         mutation.mutate();
     };
     
     const onEdit = () => {
         setIsEditigComment(true);
+    }
+    const onReplying = () => {
+        if(idCommentChild){
+            setIsReplyingChild(true);
+            setIsReplyingParent(false);
+        }
+        else{
+            setIsReplyingParent(true);
+            setIsReplyingChild(false);
+        }
     }
 
     return (
@@ -59,7 +67,7 @@ export const CommentActions = ({ setIsEditigComment, isSelfComment, idCommentPar
             {
                 !isSelfComment 
                     ? (
-                        <button className={ ElementBox({ visual: 'reply' }) }>
+                        <button onClick={ onReplying } className={ ElementBox({ visual: 'reply' }) }>
                             <Reply size={15} strokeWidth={3} />
                             <span>Reply</span>
                         </button>
