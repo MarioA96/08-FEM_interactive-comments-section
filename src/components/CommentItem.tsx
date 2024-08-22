@@ -118,7 +118,7 @@ export const CommentItem = ({ idCommentParent, idCommentChild, user, createdAt, 
                                 !isEditingComment && (
                                     <>
                                         <div id="replyComment_score" className={ cx( gridItem({ colSpan: 4 }), css({ borderRadius: '10px' }) ) }>
-                                            <CommentScore score={ score }/>
+                                            <CommentScore score={ score } idCommentParent={idCommentParent} idCommentChild={idCommentChild}/>
                                         </div>
                                         <div id="replyComment_btn_actions" className={ gridItem({ colSpan: 8 }) }>
                                             <CommentActions setIsReplyingParent={setIsReplyingParent} setIsReplyingChild={setIsReplyingChild} setIsEditigComment={setIsEditigComment} isSelfComment={isSelfComment} idCommentParent={idCommentParent} idCommentChild={idCommentChild}/>
