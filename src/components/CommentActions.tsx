@@ -29,13 +29,13 @@ const ElementBox = cva({
 export const CommentActions = ({ setIsReplyingParent, setIsReplyingChild, setIsEditigComment, isSelfComment, idCommentParent, idCommentChild }: { setIsReplyingParent: Function, setIsReplyingChild: Function, setIsEditigComment: Function, isSelfComment: boolean, idCommentParent: string, idCommentChild?: string}) => {
     
     const queryClient = useQueryClient();
-    const commnetApi = useCommentApi();
+    const commentApi = useCommentApi();
 
     const mutation = useMutation({
         mutationFn: () => (
             idCommentChild 
-                ? commnetApi.deleteComment(idCommentParent, idCommentChild) 
-                : commnetApi.deleteComment(idCommentParent)
+                ? commentApi.deleteComment(idCommentParent, idCommentChild) 
+                : commentApi.deleteComment(idCommentParent)
         ),
         onSuccess: () => {
           // Invalidate and refetch
