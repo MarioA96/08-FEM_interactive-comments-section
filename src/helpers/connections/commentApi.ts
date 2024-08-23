@@ -103,43 +103,83 @@ export class CommentApi {
         }
     }
 
-    static async put(endpoint: string, content: string, idCommentChild?: string) {
+    static async put(endpoint: string, content: (string | number), idCommentChild?: string) {
         try {
-            if (idCommentChild) {
-                const response = await fetch(CommentApi.baseUrl + endpoint);
-                const data = await response.json();
+            if(typeof content === 'string'){
+                if (idCommentChild) {
+                    const response = await fetch(CommentApi.baseUrl + endpoint);
+                    const data = await response.json();
+        
+                    // Paso 2: Modificar el elemento anidado
+                    const updatedReplies = data.replies.map((reply: { id: string }) => {
+                        if (reply.id === idCommentChild) {
+                            return { ...reply, content };
+                        }
+                        return reply;
+                    });
+        
+                    // Paso 3: Actualizar el recurso padre
+                    const putResponse = await fetch(CommentApi.baseUrl + endpoint, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ ...data, replies: updatedReplies })
+                    });
+        
+                    return putResponse;
+                } else {
+                    const response = await fetch(CommentApi.baseUrl + endpoint);
+                    const data = await response.json();
     
-                // Paso 2: Modificar el elemento anidado
-                const updatedReplies = data.replies.map((reply: { id: string }) => {
-                    if (reply.id === idCommentChild) {
-                        return { ...reply, content };
-                    }
-                    return reply;
-                });
+                    const putResponse = await fetch(CommentApi.baseUrl + endpoint, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ ...data, content })
+                    });
+        
+                    return putResponse;
+                }
+            }
+            else if(typeof content === 'number'){
+                if (idCommentChild) {
+                    const response = await fetch(CommentApi.baseUrl + endpoint);
+                    const data = await response.json();
+        
+                    // Paso 2: Modificar el elemento anidado
+                    const updatedReplies = data.replies.map((reply: { id: string }) => {
+                        if (reply.id === idCommentChild) {
+                            return { ...reply, score: content };
+                        }
+                        return reply;
+                    });
+        
+                    // Paso 3: Actualizar el recurso padre
+                    const putResponse = await fetch(CommentApi.baseUrl + endpoint, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ ...data, replies: updatedReplies })
+                    });
+        
+                    return putResponse;
+                } else {
+                    const response = await fetch(CommentApi.baseUrl + endpoint);
+                    const data = await response.json();
     
-                // Paso 3: Actualizar el recurso padre
-                const putResponse = await fetch(CommentApi.baseUrl + endpoint, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ ...data, replies: updatedReplies })
-                });
-    
-                return putResponse;
-            } else {
-                const response = await fetch(CommentApi.baseUrl + endpoint);
-                const data = await response.json();
-
-                const putResponse = await fetch(CommentApi.baseUrl + endpoint, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ ...data, content })
-                });
-    
-                return putResponse;
+                    const putResponse = await fetch(CommentApi.baseUrl + endpoint, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ ...data, score: content })
+                    });
+        
+                    return putResponse;
+                }
             }
         } catch (error) {
             console.error('Error in put method:', error);
