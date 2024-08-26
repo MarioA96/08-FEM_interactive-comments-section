@@ -1,7 +1,7 @@
 export interface Comment {
-    currentUser: User;
-    ratings:     Ratings;
-    comments:    CommentElement[];
+    currentUser:   User;
+    ratedComments?: RatedComment[];
+    comments:      CommentElement[];
 }
 
 export interface CommentElement {
@@ -24,11 +24,13 @@ export interface Image {
     webp: string;
 }
 
-export interface Ratings {
-    ratedComments: RatedComment[];
-}
-
 export interface RatedComment {
     id:     string;
-    rating: string;
+    rating:       string;
+    ratingChilds?: RatingChild[];
+}
+
+export interface RatingChild {
+    idChild: string;
+    rating:  string;
 }
