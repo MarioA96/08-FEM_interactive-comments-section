@@ -5,9 +5,9 @@ import { css, cva } from "styled-system/css";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCommentApi } from "@/helpers/useCommentApi";
+import { useRateApi } from "@/helpers/useRateApi";
 
 import { useState } from "react";
-import { useScoreApi } from "@/helpers/useScoreApi";
 
 
 const toggleGroup = cva({
@@ -49,7 +49,7 @@ export function CommentScore({ score, idCommentParent, idCommentChild }: { score
 
     const queryClient = useQueryClient();
     const commentApi = useCommentApi();
-    const scoreApi = useScoreApi();
+    const rateApi = useRateApi();
 
     const [valueScore, setValueScore] = useState<number>(score);
     const [actualTypeRate, setActualTypeRate] = useState<string>('neutral');
@@ -77,8 +77,8 @@ export function CommentScore({ score, idCommentParent, idCommentChild }: { score
     const mutationRating = useMutation({
         mutationFn: () => (
             idCommentChild 
-                ? scoreApi.postRate(actualTypeRate, idCommentParent, idCommentChild) 
-                : scoreApi.postRate(actualTypeRate, idCommentParent)
+                ? rateApi.postRate(actualTypeRate, idCommentParent, idCommentChild) 
+                : rateApi.postRate(actualTypeRate, idCommentParent)
         ),
         onSuccess: () => {
           // Invalidate and refetch
@@ -104,6 +104,7 @@ export function CommentScore({ score, idCommentParent, idCommentChild }: { score
                 setValueScore(value + 1);
                 setActualTypeRate('plus');
                 setHasBeenRated([true, false]);
+                mutationRating.mutate();
                 mutationScore.mutate();
             }
         } else {
@@ -123,6 +124,7 @@ export function CommentScore({ score, idCommentParent, idCommentChild }: { score
                 setValueScore(value - 1);
                 setActualTypeRate('minus');
                 setHasBeenRated([false, true]);
+                mutationRating.mutate();
                 mutationScore.mutate();
             }
         }
