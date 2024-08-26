@@ -1,7 +1,7 @@
 # 08-FEM_interactive-comments-section
 ## Astro + Panda-Css + TailwindCss + Shadcn + React
 
-### State of project: 🚧 In construction 🚧
+### State of project: 🚧 WIP 🚧
 
 ## The challenge
 
@@ -29,38 +29,6 @@ Want some support on the challenge? [Join our community](https://www.frontendmen
 - A confirmation modal should pop up before a comment or reply is deleted.
 - Adding a new comment or reply uses the `currentUser` object from within the `data.json` file.
 - You can only edit or delete your own comments and replies.
-
-
-## Astro Starter Kit: Minimal
-
-```sh
-npm create astro@latest -- --template minimal
-```
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
 
 ## 🧞 Commands
 
