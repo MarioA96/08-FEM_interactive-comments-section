@@ -38,7 +38,7 @@ const formSchema = z.object({
 })
 
 
-export function AutorCommentSection({idCommentParent, idCommentChild, isReplyingParent, setIsReplyingParent, isReplyingChild, setIsReplyingChild, replyingToParentUser, replyingToChildUser}:{idCommentParent: string, idCommentChild?: string, isReplyingParent?: boolean, setIsReplyingParent: Function, isReplyingChild?: boolean, setIsReplyingChild: Function, replyingToParentUser?: string, replyingToChildUser?: string}) {
+export function AutorCommentSection({idCommentParent, idCommentChild, isReplyingParent, setIsReplyingParent, isReplyingChild, setIsReplyingChild, replyingToParentUser, replyingToChildUser}:{idCommentParent?: string, idCommentChild?: string, isReplyingParent?: boolean, setIsReplyingParent?: Function, isReplyingChild?: boolean, setIsReplyingChild?: Function, replyingToParentUser?: string, replyingToChildUser?: string}) {
 
     //QueryClient for cache management
     const queryClient = useQueryClient();
@@ -113,10 +113,10 @@ export function AutorCommentSection({idCommentParent, idCommentChild, isReplying
 
     function handleCancel(event: React.MouseEvent<HTMLButtonElement>) {
         event.preventDefault(); 
-        if(isReplyingParent){
+        if(isReplyingParent && setIsReplyingParent){
             setIsReplyingParent(false);
         }
-        else if(isReplyingChild){
+        else if(isReplyingChild && setIsReplyingChild){
             setIsReplyingChild(false);
         }
     }
