@@ -162,6 +162,7 @@ export function AutorCommentSection({idCommentParent, idCommentChild, isReplying
                                     {
                                         currentUser && (
                                             <img src={ currentUser.image.png } width="38px"/>
+                                            
                                         )
                                     }
                                 </div>
