@@ -161,7 +161,7 @@ export function AutorCommentSection({idCommentParent, idCommentChild, isReplying
                                 <div className={gridItem({ colSpan: 4 })}>
                                     {
                                         queryCurrentUser &&  (
-                                            <img src={ currentUser.image.png } width="38px"/>
+                                            <img src={ queryCurrentUser.data?.image.png } width="38px"/>
                                         )
                                     }
                                 </div>
