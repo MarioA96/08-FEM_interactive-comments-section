@@ -1,0 +1,18 @@
+Una cuestion importante cuando quize agregar un "form" mediante shadcn es que este debes de modificarlo, haciendo algo editando el "components/ui/form.tsx" en la cabecera debes hacer la siguiente modificacion:
+
+import {
+  Controller,
+  FormProvider,
+  useFormContext,
+} from "react-hook-form"
+
+import type { ControllerProps, FieldPath, FieldValues } from "react-hook-form"
+
+Y al archivo donde estes agregando/implementando dicho form, asegurate de que cuente en su cabecera con 'use client'; y que el astro component tenga el client:load -> <Component client:load/>
+
+Lecturas:
+[1](https://stackoverflow.com/questions/77690083/react-hook-form-not-working-with-astro-and-react)
+[2](https://stackoverflow.com/questions/78011675/import-errors-from-3rd-party-dependencies-react-hook-form-in-vite-library/78082859#78082859)
+
+
+Primero asegurate de que el servicio de 08-FEM_server este encendido para poder establecer la conexion necesario para la aplicacion
