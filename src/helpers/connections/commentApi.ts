@@ -2,7 +2,7 @@ import type { CommentElement } from "@/interfaces/comment.interface";
 
 export class CommentApi {
 
-    static baseUrl = 'http://localhost:3000';
+    static baseUrl = 'https://zero8-fem-server.onrender.com';
 
     static async get(endpoint: string) {
         try {

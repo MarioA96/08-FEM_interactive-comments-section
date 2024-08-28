@@ -35,6 +35,17 @@ export const CommentSection = () => {
     const comments : CommentElement[] | undefined = queryComments.data;
     const currentUser : User | undefined = queryCurrentUser.data;
 
+    //TODO - agregar un loading mientras se cargan los comentarios, con el isLoading de la query
+    //TODO - agregar un mensaje de error si no se cargan los comentarios, con el isError de la query
+    //TODO - agregar un manejador de estado para conservar la integridad de la query de los comentarios y ratedcomments
+
+    //! De rateApi.ts
+    //** Caso inicial 'neutral' cuando hace primer rate o hace el cambio de un rate a neutral LISTO */
+    /////TODO Caso 1: Cuando el usuario hace un rate por primera vez o cambia de rate a neutral LISTO
+    //TODO Caso 2.1: Cuando el usuario cambia de rate a otro rate en el mismo recurso padre PENDIENTE
+    //TODO Caso 3.1: Cuando el usuario cambia de rate a otro rate en un recurso hijo PENDIENTE
+    //TODO Caso 4.1: Cuando el usuario cambia de rate a otro rate en un recurso padre y otro recurso hijo PENDIENTE
+    //TODO Caso 5.1: Cuando se elimina un comentario padre o hijo este debe eliminar igualmente su rate PENDIENTE
     return (
         
         <>
